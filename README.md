@@ -1,46 +1,79 @@
-# Getting Started with Create React App
+# Facebook Instant Game with react
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## Available Scripts
+Make sure to create your game on https://developers.facebook.com/apps and get to the point of having an Instant Game with an app ID. You will also need to create an upload token.
 
-In the project directory, you can run:
+## Installation
 
-### `yarn start`
+1. Make sure `yarn` is installed on your machine.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+2. `yarn install`
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+3. Update `.env` with your app's ID
 
-### `yarn test`
+## Running tests
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+`yarn test`
 
-### `yarn build`
+## Running locally with mocked facebook API
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+TODO: remove the manual process for this - can this be a script?
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+1. In `index.html`, replace
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+   ```html
+   <script src="https://connect.facebook.net/en_US/fbinstant.7.1.js"></script>
+   ```
 
-### `yarn eject`
+   with
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+   ```html
+   <script src="mock/fbinstant.6.2.mock.js"></script>
+   ```
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+   (don't check this in to version control!)
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+2. `yarn start` - this opens http://localhost:3000
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+## Running locally with real facebook API
 
-## Learn More
+TODO: remove the manual process for this - can this be a script?
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+1. Make sure `index.html` is using the real version of fbinstant, not the mock (see above).
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+2. `HTTPS=true yarn start` - this opens https://localhost:3000 (but that window won't have access to the FBInstant API)
+
+3. (Only need to do once) Tell your browser to unsafely allow connection to https://localhost:3000
+
+4. Open https://www.facebook.com/embed/instantgames/your_app_ID_here/player?game_url=https://localhost:3000 (with your app ID instead of "your_app_ID_here")
+
+## Uploading to facebook web hosting
+
+1. Create `env.local` in this directory:
+
+   ```
+   FB_UPLOAD_TOKEN="[token goes here]"
+   ```
+
+   Never check this into version control - this is a secret!
+
+2. Run `yarn upload`
+
+## Advanced usage
+
+This was created with create-react-app, and therefore it has babel, webpack and eslint configured automatically. If you need to customize these things, you may need to eject with `yarn eject`. Make sure to read [the documentation](https://create-react-app.dev/docs/available-scripts#npm-run-eject) first.
+
+## Limitations
+
+### Some issue with strip-ansi
+
+In package.json we had to add
+
+```
+  "resolutions": {
+    "strip-ansi": "6.0.0"
+  },
+```
+
+to work around an issue. Maybe there's a nicer fix?
